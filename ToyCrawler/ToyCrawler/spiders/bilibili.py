@@ -26,15 +26,21 @@ class BilibiliSpider(scrapy.Spider):
 
     def parse(self, response):
         item = BilibiliItem()
-        limit = 1
-        users = response.xpath('//div[@class="ajax-render"]')
+        limit = 3
+        users = response.xpath('//div[@class="ajax-render"]/li')
         for user in users:
+            limit -= 1
+            if limit < 0:
+                break
+
             item['name'] = user.xpath(
                 './/div[@class="headline"]/a/@title').extract()[0]
             item['num_uploads'] = user.xpath(
-                './/div[@class="up-info"]/span/text()').extract()[0]
+                './/div[@class="up-info"]/span[1]/text()').re(ur'稿件：(.*)')[0]
             item['num_fans'] = user.xpath(
-                './/div[@class="up-info"]/span[2]/text()').extract()[0]
+                './/div[@class="up-info"]/span[2]/text()').re(ur'粉丝：(.*)')[0]
+            item['link'] = user.xpath(
+                './/div[@class="up-face"]/a/@href').extract()[0]
             item['info'] = user.xpath(
                 './/div[@class="desc"]/text()').extract()[0]
             yield item

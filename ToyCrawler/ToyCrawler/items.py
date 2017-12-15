@@ -20,5 +20,7 @@ class BilibiliItem(scrapy.Item):
     num_uploads = scrapy.Field()
     # num_fans
     num_fans = scrapy.Field()
+    # link
+    link = scrapy.Field()
     # info
     info = scrapy.Field()
