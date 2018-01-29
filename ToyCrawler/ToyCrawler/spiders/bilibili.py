@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapy import Request
-from ToyCrawler.items import BilibiliItem
+from ToyCrawler.items import IDItem
 
 
 class BilibiliSpider(scrapy.Spider):
@@ -15,6 +15,10 @@ class BilibiliSpider(scrapy.Spider):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36',
     }
+    custom_settings = {
+        # specifies exported fields and order
+        'FEED_EXPORT_FIELDS': ["name", "num_uploads", "num_answers", "num_followers", "num_followees", "image", "link", "info"],
+    }
 
     def __init__(self, id=None, *args, **kwargs):
         super(BilibiliSpider, self).__init__(*args, **kwargs)
@@ -25,7 +29,7 @@ class BilibiliSpider(scrapy.Spider):
         yield Request(url, headers=self.headers)
 
     def parse(self, response):
-        item = BilibiliItem()
+        item = IDItem()
         limit = 3
         users = response.xpath('//div[@class="ajax-render"]/li')
         for user in users:
@@ -37,10 +41,10 @@ class BilibiliSpider(scrapy.Spider):
                 './/div[@class="headline"]/a/@title').extract()[0]
             item['num_uploads'] = user.xpath(
                 './/div[@class="up-info"]/span[1]/text()').re(ur'稿件：(.*)')[0]
-            item['num_fans'] = user.xpath(
+            item['num_followers'] = user.xpath(
                 './/div[@class="up-info"]/span[2]/text()').re(ur'粉丝：(.*)')[0]
-            item['link'] = user.xpath(
-                './/div[@class="up-face"]/a/@href').extract()[0]
+            item['link'] = "http:" + user.xpath(
+                './/div[@class="up-face"]/a/@href').re(ur'(.*)\?from')[0]
             item['info'] = user.xpath(
                 './/div[@class="desc"]/text()').extract()[0]
             yield item

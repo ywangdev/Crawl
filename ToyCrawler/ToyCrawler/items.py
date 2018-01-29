@@ -13,13 +13,33 @@ class ToycrawlerItem(scrapy.Item):
     # name = scrapy.Field()
     pass
 
-class BilibiliItem(scrapy.Item):
+class IDItem(scrapy.Item):
     # name
     name = scrapy.Field()
-    # num_uploads
+    # num uploads/posts
     num_uploads = scrapy.Field()
-    # num_fans
+    # num answers (e.g. zhihu)
+    num_answers = scrapy.Field()
+    # num followers
+    num_followers = scrapy.Field()
+    # num followees
+    num_followees = scrapy.Field()
+    # image
+    image = scrapy.Field()
+    # link to personal page
+    link = scrapy.Field()
+    # info; description
+    info = scrapy.Field()
+
+class InstagramItem(scrapy.Item):
+    # name
+    name = scrapy.Field()
+    # num uploads/posts
+    num_uploads = scrapy.Field()
+    # num fans/followers
     num_fans = scrapy.Field()
+    # num followees
+    num_followees = scrapy.Field()
     # link
     link = scrapy.Field()
     # info
